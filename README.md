@@ -11,13 +11,21 @@ This function extend Number.toString() and parseInt(), you can define base numbe
 
 ###参数说明
 
-**      original :** String或Number类型，如果为Number（十进制数字）类型，则将其转换成字符串，参数base为自定的目标转换进制，string_table为自定的目标转换字符基数表；如果为String类型，则将其转换成十进制数字，参数base为original的转换进制，string_table为original的转换字符基数表；
+**original :**
 
-**          base :** Number类型，可选参数，默认值为10，表示转换进制．base必须大于等于2，且小于string_table的字符数量．如果base小于36，且string_table为默认值，则自动调用Javascript内置的Number.toString()和parseInt()方法进行转换．
+String或Number类型，如果为Number（十进制数字）类型，则将其转换成字符串，参数base为自定的目标转换进制，string_table为自定的目标转换字符基数表；如果为String类型，则将其转换成十进制数字，参数base为original的转换进制，string_table为original的转换字符基数表；
 
-**  string_table :** String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ＂，表示转换字符基数表．该字符串中的字符必须唯一且可见．
+**base :**
 
-**      callback :** 回调函数，function(err, result)，可选参数．如果未设置，nodeAnyBaseConverter()直接返回转换结果．
+Number类型，可选参数，默认值为10，表示转换进制．base必须大于等于2，且小于string_table的字符数量．如果base小于36，且string_table为默认值，则自动调用Javascript内置的Number.toString()和parseInt()方法进行转换．
+
+**string_table :**
+
+String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ＂，表示转换字符基数表．该字符串中的字符必须唯一且可见．
+
+**allback :**
+
+回调函数，function(err, result)，可选参数．如果未设置，nodeAnyBaseConverter()直接返回转换结果．
 
 ###示例
 
