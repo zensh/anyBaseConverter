@@ -12,9 +12,13 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
   //                 character must be unique and visible.
   //      callback : function(err, result), optional.
   //
-
   var STRING = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     result;
+
+  var callBack = function(err, re) {
+      if(err) return console.log(err);
+      else return re;
+    }
 
   var decToGeneric = function(o, b, c) {
 
@@ -22,16 +26,16 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
         return o.toString(b); // Fallback to native base conversion
       }
 
-      var result = '',
+      var re = '',
         q = 0;
 
       while(o != 0) {
         q = o % b;
-        result = c[q] + result;
+        re = c[q] + re;
         o = (o - q) / b;
       }
 
-      return result;
+      return re;
     }
 
   var genericToDec = function(o, b, c) {
@@ -42,7 +46,7 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
 
       var cache = {},
         s = '',
-        result = 0,
+        re = 0,
         pow = 1;
 
       for(var i = o.length - 1; i >= 0; i--) {
@@ -50,27 +54,34 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
         if(typeof cache[s] == 'undefined') {
           cache[s] = c.indexOf(s);
         }
-        result += pow * cache[s];
+        re += pow * cache[s];
         pow *= b;
       }
-      return result;
+      return re;
     }
 
   try {
-    
-    //Check out string_table
-    string_table = string_table || STRING;  //if undefined, set default value STRING
 
+    //Check out callback function
+    callback = callback || callBack;
+    if(typeof callback !== 'function') {
+      return console.log('Callback must be a function! Such as:\n '+callBack.toString());
+    }
+
+    //Check out string_table
+    string_table = string_table || STRING; //if undefined, set default value STRING
     if(string_table !== STRING && string_table === STRING.slice(0, string_table.length)) {
       string_table = STRING;
-    }  //if subset of STRING, set default value STRING
-
+    } //if subset of STRING, set default value STRING
     if(typeof string_table === 'string' && string_table.length >= 2) {
-      if(string_table !== STRING) {  //if STRING, need not check out
-        for(var i = string_table.length - 1; i >= 0; i -= 1) {  //check out for uniquely
-          for(var k = i - 1; k >= 0; k -= 1) {
-            if(string_table[i] <= ' ' || string_table[i] === string_table[k]) {
-              throw new Error('"string_table" err! It must be unique and visible! : "' + string_table[i] + '"');
+      if(string_table !== STRING) { //if STRING, need not check out
+        for(var i = string_table.length - 1; i >= 0; i--) { //check out for uniquely
+          if(string_table[i] <= '\u0020') {
+            throw new Error('"string_table" err! It must be visible! : "' + string_table[i] + '"');
+          }
+          for(var k = i - 1; k >= 0; k--) {
+            if(string_table[i] === string_table[k]) {
+              throw new Error('"string_table" err! It must be unique! : "' + string_table[i] + '"');
             }
           };
         };
@@ -81,48 +92,39 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
     }
 
     //check out base
-    base = base || 10;  //if undefined, set default value 10
-
-    if(typeof base !== 'number' || isNaN(base) || base !== Math.floor(base) || base < 2 || base > string_table.length) {
+    base = base || 10; //if undefined, set default value 10
+    if(typeof base !== 'number' || !isFinite(base) || base !== Math.floor(base) || base < 2 || base > string_table.length) {
       throw new Error('Invalid "base" number! It must be an integer, and 2 <= base <= string_table.length.');
     }
 
     //check out original and execute
-    if(typeof original === 'number') {
-      if(original >= 0 && original <= Number.MAX_VALUE && original === Math.floor(original)) {
+    switch(typeof original) {
+    case 'number':
+      if(isFinite(original) && original >= 0 && original <= Number.MAX_VALUE && original === Math.floor(original)) {
         result = decToGeneric(original, base, string_table);
       } else {
         throw new Error('Invalid "original" number! It must be an integer, and 0 <= number <= Number.MAX_VALUE.');
       }
+      break;
 
-    } else if(typeof original === 'string') {
-      for(var i = original.length - 1; i >= 0; i -= 1) {
-        if(string_table.indexOf(original[i]) === -1 || string_table.indexOf(original[i]) > base) {
+    case 'string':
+      for(var i = original.length - 1; i >= 0; i--) {
+        var checkout = string_table.indexOf(original[i]);
+        if(checkout === -1 || checkout >= base) {
           throw new Error('"' + original[i] + '" is invalid "original" string! Available character is "' + string_table + '".');
         }
       };
       result = genericToDec(original, base, string_table);
+      break;
 
-    } else {
+    default:
       throw new Error('"original" must be number or string!');
     }
 
+    return callback(null, result);
+
   } catch(err) {
-
-    if(callback) {
-      return callback(err, null);
-    } else {
-      console.log(err);
-    }
-
-  } finally {
-
-    if(callback) {
-      return callback(null,result);
-    } else {
-      return result;
-    }
-
-  } 
+    return callback(err, null);
+  }
 
 }
