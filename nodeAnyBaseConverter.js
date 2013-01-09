@@ -9,7 +9,7 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
   //          base : Number, optional, default value is 10, must be an integer, 2 <= base <= string_table.length; if base <=36
   //                 and string_table use default value, anyBaseConverter() call native base conversion. 
   //  string_table : String, optional, default value is "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  //                 character must be unique and visible.
+  //                 character must be unique and not whitespace character.
   //      callback : function(err, result), optional.
   //
   var STRING = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -75,10 +75,11 @@ module.exports = function anyBaseConverter(original, base, string_table, callbac
     } //if subset of STRING, set default value STRING
     if(typeof string_table === 'string' && string_table.length >= 2) {
       if(string_table !== STRING) { //if STRING, need not check out
+        var reg = /\s+/;  //check if any Unicode whitespace character
+        if(reg.test(string_table)) {
+            throw new Error('"string_table" err! It must be not a unicode whitespace character!');
+        }
         for(var i = string_table.length - 1; i >= 0; i--) { //check out for uniquely
-          if(string_table[i] <= '\u0020') {
-            throw new Error('"string_table" err! It must be visible! : "' + string_table[i] + '"');
-          }
           for(var k = i - 1; k >= 0; k--) {
             if(string_table[i] === string_table[k]) {
               throw new Error('"string_table" err! It must be unique! : "' + string_table[i] + '"');
