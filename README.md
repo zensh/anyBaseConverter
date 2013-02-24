@@ -1,7 +1,7 @@
 nodeAnyBaseConverter
 ====================
 
-##nodeAnyBaseConverter(original, [base], [string_table], [callback])
+##nodeAnyBaseConverter(original, [base], [string_table])
 
 ###函数说明
 
@@ -21,11 +21,7 @@ Number类型，可选参数，默认值为10，表示转换进制．base必须�
 
 **string_table :**
 
-String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ＂，表示转换字符基数表．该字符串中的字符必须唯一且可见．
-
-**allback :**
-
-回调函数，function(err, result)，可选参数．如果未设置，nodeAnyBaseConverter()直接返回转换结果．
+String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ＂，表示转换字符基数表．该字符串中的字符必须唯一．
 
 ###示例
 
@@ -37,20 +33,12 @@ String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxy
     
     result = anyBaseConverter('kf12oi',36); 　//相当与调用"parseInt('kf12oi', 36);"，结果为1234567890
     
-    anyBaseConverter(911081363, 62, '', function(e, r) {
-      console.log(r);
-    });　　//ZENSH 
+    anyBaseConverter(911081363, 62);　　//ZENSH 
     
-    anyBaseConverter('ZENSH', 62, null, function(e, r) {
-      console.log(r);
-    });  //911081363
+    anyBaseConverter('ZENSH', 62);  //911081363
     
-    anyBaseConverter(9876543210, 10, ')!@#$%^&*(', function(e, r) {
-      console.log(r);
-    });  //(*&^%$#@!)
+    anyBaseConverter(9876543210, 10, ')!@#$%^&*(');  //(*&^%$#@!)
     
-    anyBaseConverter(9876543210, 10, 'ABCDEFGHIJ', function(e, r) {
-      console.log(r);
-    });  //JIHGFEDCBA
+    anyBaseConverter(9876543210, 10, 'ABCDEFGHIJ');  //JIHGFEDCBA
 
 **运行：node test.js**
