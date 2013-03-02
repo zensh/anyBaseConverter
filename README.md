@@ -1,7 +1,7 @@
-nodeAnyBaseConverter
+anyBaseConverter
 ====================
 
-##nodeAnyBaseConverter(original, [base], [string_table])
+##anyBaseConverter(original, [base], [string_table])
 
 ###函数说明
 
@@ -27,13 +27,13 @@ String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxy
 
 **test.js**
 
-    var anyBaseConverter = require('./nodeAnyBaseConverter');
+    var anyBaseConverter = require('./anyBaseConverter');
 
     console.log(anyBaseConverter(1234567890,16));  //相当于调用"var n =1234567890; n.toString(16);"，结果为499602d2
 
     console.log(anyBaseConverter('kf12oi',36)); 　//相当与调用"parseInt('kf12oi', 36);"，结果为1234567890
 
-    console.log(anyBaseConverter(911081363, 62));　　//ZENSH 
+    console.log(anyBaseConverter(911081363, 62));　　//ZENSH
 
     console.log(anyBaseConverter('ZENSH', 62));  //911081363
 
@@ -43,5 +43,5 @@ String类型，可选参数，默认值为＂0123456789abcdefghijklmnopqrstuvwxy
 
 **运行：node test.js**
 
-**浏览器端直接调用<code>nodeAnyBaseConverter(original, [base], [string_table])</code>**
+**浏览器端直接调用<code>anyBaseConverter(original, [base], [string_table])</code>**
 
