@@ -52,58 +52,54 @@
             }
             return re;
         }
-        try {
-            //Check out string_table
-            string_table = string_table || STRING; //if undefined, set default value STRING
-            if (string_table !== STRING && string_table === STRING.slice(0, string_table.length)) {
-                string_table = STRING;
-            } //if subset of STRING, set default value STRING
-            if (typeof string_table === 'string' && string_table.length >= 2) {
-                if (string_table !== STRING) { //if STRING, need not check out
-                    // var reg = /\s+/;  //check if any Unicode whitespace character
-                    // if(reg.test(string_table)) {
-                    //     throw new Error('"string_table" err! It must be not a unicode whitespace character!');
-                    // }
-                    var unique = {};
-                    for (var i = string_table.length - 1; i >= 0; i--) { //check out for uniquely
-                        if (unique['__' + string_table[i]] !== 1) unique['__' + string_table[i]] = 1;
-                        else throw new Error('"string_table" err! It must be unique! : "' + string_table[i] + '"');
-                    };
-                }
-            } else {
-                throw new Error('"string_table" must be string, and string_table.length >=2.');
+
+        //Check out string_table
+        string_table = string_table || STRING; //if undefined, set default value STRING
+        if (string_table !== STRING && string_table === STRING.slice(0, string_table.length)) {
+            string_table = STRING;
+        } //if subset of STRING, set default value STRING
+        if (typeof string_table === 'string' && string_table.length >= 2) {
+            if (string_table !== STRING) { //if STRING, need not check out
+                // var reg = /\s+/;  //check if any Unicode whitespace character
+                // if(reg.test(string_table)) {
+                //     throw new Error('"string_table" err! It must be not a unicode whitespace character!');
+                // }
+                var unique = {};
+                for (var i = string_table.length - 1; i >= 0; i--) { //check out for uniquely
+                    if (unique['__' + string_table[i]] !== 1) unique['__' + string_table[i]] = 1;
+                    else throw new Error('"string_table" err! It must be unique! : "' + string_table[i] + '"');
+                };
             }
-            //check out base
-            base = base || 10; //if undefined, set default value 10
-            if (typeof base !== 'number' || !isFinite(base) || base !== Math.floor(base) || base < 2 || base > string_table.length) {
-                throw new Error('Invalid "base" number! It must be an integer, and 2 <= base <= string_table.length.');
-            }
-            //check out original and execute
-            switch (typeof original) {
-                case 'number':
-                    if (isFinite(original) && original >= 0 && original <= Number.MAX_VALUE && original === Math.floor(original)) {
-                        result = decToGeneric(original, base, string_table);
-                    } else {
-                        throw new Error('Invalid "original" number! It must be an integer, and 0 <= number <= Number.MAX_VALUE.');
-                    }
-                    break;
-                case 'string':
-                    for (var i = original.length - 1; i >= 0; i--) {
-                        var checkout = string_table.indexOf(original[i]);
-                        if (checkout === -1 || checkout >= base) {
-                            throw new Error('"' + original[i] + '" is invalid "original" string! Available character is "' + string_table + '".');
-                        }
-                    };
-                    result = genericToDec(original, base, string_table);
-                    break;
-                default:
-                    throw new Error('"original" must be number or string!');
-            }
-            return result;
-        } catch (err) {
-            console.log(err);
-            return null;
+        } else {
+            throw new Error('"string_table" must be string, and string_table.length >=2.');
         }
+        //check out base
+        base = base || 10; //if undefined, set default value 10
+        if (typeof base !== 'number' || !isFinite(base) || base !== Math.floor(base) || base < 2 || base > string_table.length) {
+            throw new Error('Invalid "base" number! It must be an integer, and 2 <= base <= string_table.length.');
+        }
+        //check out original and execute
+        switch (typeof original) {
+            case 'number':
+                if (isFinite(original) && original >= 0 && original <= Number.MAX_VALUE && original === Math.floor(original)) {
+                    result = decToGeneric(original, base, string_table);
+                } else {
+                    throw new Error('Invalid "original" number! It must be an integer, and 0 <= number <= Number.MAX_VALUE.');
+                }
+                break;
+            case 'string':
+                for (var i = original.length - 1; i >= 0; i--) {
+                    var checkout = string_table.indexOf(original[i]);
+                    if (checkout === -1 || checkout >= base) {
+                        throw new Error('"' + original[i] + '" is invalid "original" string! Available character is "' + string_table + '".');
+                    }
+                };
+                result = genericToDec(original, base, string_table);
+                break;
+            default:
+                throw new Error('"original" must be number or string!');
+        }
+        return result;
     };
     if (typeof module !== 'undefined') {
         module.exports = anyBaseConverter;
@@ -113,4 +109,3 @@
 }).call(function() {
     return this || (typeof window !== 'undefined' ? window : global);
 }());
-
