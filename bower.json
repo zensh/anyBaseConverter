@@ -1,0 +1,25 @@
+{
+  "name": "baseco",
+  "description": "Any base converter.",
+  "main": "baseco.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/zensh/baseco",
+  "authors": [
+    "Yan Qing <admin@zensh.com>"
+  ],
+  "keywords": [
+    "base",
+    "baseco",
+    "converter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "docs",
+    "benchmark",
+    "test",
+    "tests"
+  ]
+}
