@@ -1,4 +1,4 @@
-// baseco v0.1.0
+// baseco v0.2.0
 //
 // **Github:** https://github.com/zensh/baseco
 //
@@ -17,17 +17,7 @@
   }
 }(this, function () {
   'use strict';
-  //  anyBaseConverter(original, [base], [alphabet]);
-  //
-  //  This function extend Number.toString() and parseInt(), you can define base number and convert string table yourself.
-  //
-  //      original : String or Number, when String, character must be in alphabet, converter to a decimal number;
-  //                 when Number converter to a string that used alphabet;
-  //          base : Number, optional, default value is 10, must be an integer, 2 <= base <= alphabet.length; if base <=36
-  //                 and alphabet use default value, anyBaseConverter() call native base conversion.
-  //  alphabet : String, optional, default value is "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  //                 character must be unique.
-  //
+
   var STRING = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
     MSG = {
       alphabet1: '"alphabet" must be string, and alphabet.length >=2.',
@@ -35,7 +25,8 @@
       number1: 'Invalid "base" number! It must be an integer, and 2 <= base <= alphabet.length.',
       number2: 'Invalid "original" number! It must be an integer, and 0 <= number <= Number.MAX_VALUE.',
       original1: ' is invalid "original" string!',
-      original2: '"original" must be number or string!'
+      original2: '"original" must be a string!',
+      original3: '"original" must be a number!'
     };
 
   function decToGeneric(o, b, c) {
@@ -64,12 +55,14 @@
     return re;
   }
 
-  function baseco(original, base, alphabet) {
-    var result, unique = {};
+  function Baseco(base, alphabet) {
+    var unique = {};
+
+    if (!(this instanceof Baseco)) return new Baseco(alphabet, base);
     // check out alphabet
     alphabet = alphabet || STRING;
 
-    if (typeof alphabet !== 'string' && alphabet.length < 2) throw new Error(MSG.alphabet1);
+    if (typeof alphabet !== 'string' || alphabet.length < 2) throw new Error(MSG.alphabet1);
 
     //if subset of STRING, set default value STRING
     if (alphabet !== STRING && alphabet === STRING.slice(0, alphabet.length)) alphabet = STRING;
@@ -85,19 +78,21 @@
     base = Math.floor(base) || 10;
     if (!(base >= 2 && base <= alphabet.length)) throw new Error(MSG.number1);
 
-    //check out original and execute
-    switch (typeof original) {
-      case 'number':
-        original = Math.floor(original);
-        if (!(original >= 0 && original <= Number.MAX_VALUE)) throw new Error(MSG.number2);
-        return decToGeneric(original, base, alphabet);
-
-      case 'string':
-        return genericToDec(original, base, alphabet);
-    }
-
-    throw new Error(MSG.original2);
+    this._alphabet = alphabet;
+    this._base = base;
   }
 
-  return baseco;
+  Baseco.prototype.gToD = function (value) {
+    if (typeof value !== 'string') throw new Error(MSG.original2);
+    return genericToDec(value, this._base, this._alphabet);
+  };
+
+  Baseco.prototype.dToG = function (value) {
+    if (typeof value !== 'number') throw new Error(MSG.original3);
+    value = Math.floor(value);
+    if (!(value >= 0 && value <= Number.MAX_VALUE)) throw new Error(MSG.number2);
+    return decToGeneric(value, this._base, this._alphabet);
+  };
+
+  return Baseco;
 }));
